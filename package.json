@@ -1,0 +1,25 @@
+{
+  "name": "eldenringapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lepetoc/EldenRingAPI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lepetoc/EldenRingAPI/issues"
+  },
+  "homepage": "https://github.com/lepetoc/EldenRingAPI#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "winston": "^3.11.0"
+  }
+}
