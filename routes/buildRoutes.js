@@ -8,6 +8,7 @@ router.use(authMiddleware);
 
 router.get('/', buildController.getAllBuilds);
 router.get('/:id', buildController.getBuildById);
+router.get('/:id', buildController.getBuildsFromUser);
 router.post('/', buildController.createBuild);
 router.put('/:id', buildController.updateBuild);
 router.delete('/:id', buildController.deleteBuild);
