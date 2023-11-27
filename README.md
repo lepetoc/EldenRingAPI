@@ -56,7 +56,7 @@ Une fois votre build terminé, choisissez de le rendre public ou privé. Les bui
 
 Cette application utilise une API externe publique d'Elden Ring pour récupérer les données des objets du jeu. Les informations sur les objets sont récupérées en temps réel pour permettre une expérience à jour et complète pour les utilisateurs.
 
-Pour toute assistance supplémentaire, veuillez consulter la documentation ou contacter notre équipe de support.
+Pour voir l'avancée dans le projet, consulter les commits
 
 ----------
 
