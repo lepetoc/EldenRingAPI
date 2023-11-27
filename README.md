@@ -1,1 +1,1 @@
-# EldenRingAPI
+# Elden Ring Build Planner
