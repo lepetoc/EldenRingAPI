@@ -1,6 +1,8 @@
 
 # Elden Ring Build Planner
 
+![eldenring-opensource-logo](https://1000logos.net/wp-content/uploads/2023/09/Elden-Ring-Logo.png)
+
 Bienvenue dans Elden Ring Build Planner, une application qui permet aux joueurs de créer, enregistrer et partager leurs propres builds pour le jeu Elden Ring.
 
 ## Configuration
