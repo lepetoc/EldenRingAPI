@@ -51,6 +51,11 @@ const createUser = async (req, res) => {
     }
 };
 
+const login = (req, res) => {
+    const userId = req.params.id;
+    const { body } = req;
+    res.json({ message: `User with ID ${userId} updated`, updatedUser: body });
+};
 
 const updateUser = (req, res) => {
     const userId = req.params.id;
@@ -69,4 +74,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    login,
 };
