@@ -2,7 +2,7 @@
 const express = require('express');
 const compression = require('compression');
 const app = express();
-const port = 3000;
+require('dotenv').config()
 
 // Middleware pour le corps des requêtes JSON
 app.use(express.json());
@@ -16,6 +16,6 @@ const buildRoutes = require('./routes/buildRoutes');
 app.use('/users', userRoutes);
 app.use('/builds', buildRoutes);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
