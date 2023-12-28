@@ -1,4 +1,5 @@
 require('dotenv').config()
+const logger = require('../logger');
 
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({
@@ -11,17 +12,17 @@ const pool = mariadb.createPool({
 
 // controllers/buildController.js
 const getAllBuilds = async (req, res) => {
-  let route = "buildController/getAllBuilds"
+  let route = `${req.method} ${req.baseUrl}${req.path}`;
   let conn;
   try {
     conn = await pool.getConnection();
     const response = await conn.query(
       "SELECT * FROM builds WHERE visibility = true",
     );
-    //console.log(response);
+    logger.info(`${route} - ${response}`);
     res.json({ response });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).send("An error occurred");
   } finally {
     if (conn) conn.release();
@@ -29,17 +30,17 @@ const getAllBuilds = async (req, res) => {
 };
 
 const getBuildById = async (req, res) => {
-  let route = "buildController/getBuildById"
+  let route = `${req.method} ${req.baseUrl}${req.path}`;
   let conn;
   try {
     conn = await pool.getConnection();
     const response = await conn.query(
       "SELECT * FROM builds WHERE id = ?", [req.params.id]
     );
-    //console.log(response);
+    logger.info(`${route} - ${response}`);
     res.json({ response });
   } catch (error) {
-    console.error(error);
+    logger.error(`${route} - ${error}`);
     res.status(500).send("An error occurred");
   } finally {
     if (conn) conn.release();
@@ -47,7 +48,7 @@ const getBuildById = async (req, res) => {
 };
 
 const getBuildsFromUser = async (req, res) => {
-  let route = "buildController/getBuildsFromUser"
+  let route = `${req.method} ${req.baseUrl}${req.path}`;
   let conn;
   const userParamId = req.params.id;
   try {
@@ -64,20 +65,20 @@ const getBuildsFromUser = async (req, res) => {
     const response = await conn.query(
       query, [userParamId]
     );
+    logger.info(`${route} - ${response}`);
     res.json({ response });
   } catch (error) {
-    console.error(error);
+    logger.info(`${route} - ${error}`);
     res.status(500).send("An error occurred");
   } finally {
     if (conn) conn.release();
   }
-  //res.send(`Build de l'utilisateur ${buildId}`);
 };
 
 const createBuild = async (req, res) => {
   const { name, description, itemsArray, tagsArray, visibility } = req.body;
   let currentDate = new Date();
-  let route = "buildController/createBuild"
+  let route = `${req.method} ${req.baseUrl}${req.path}`;
   let conn;
   try {
     conn = await pool.getConnection();
@@ -103,10 +104,10 @@ const createBuild = async (req, res) => {
       ]
     );
 
-    console.log(response);
+    logger.info(`${route} - ${response}`);
     res.send("Build created");
   } catch (error) {
-    console.error(error);
+    logger.info(`${route} - ${error}`);
     res.status(500).send("An error occurred");
   } finally {
     if (conn) conn.release();
@@ -114,7 +115,7 @@ const createBuild = async (req, res) => {
 };
 
 const updateBuild = async (req, res) => {
-  let route = "buildController/updateBuild"
+  let route = `${req.method} ${req.baseUrl}${req.path}`;
   const buildId = req.params.id;
   const { name, description, itemsArray, tagsArray, visibility } = req.body;
   let conn;
@@ -127,10 +128,10 @@ const updateBuild = async (req, res) => {
       "UPDATE builds SET name = ?, description = ?, items = ?, tags = ?, visibility = ?, modificationDate = ? WHERE user = ? AND id = ? ;", 
       [name, description, itemsArray, tagsArray, visibility, date, userId, buildId]
     );
-    console.log(response);
+    logger.info(`${route} - ${response}`);
     res.send(`Build avec l'ID ${buildId} mis à jour`);
   } catch (error) {
-    console.error(error);
+    logger.info(`${route} - ${error}`);
     res.status(500).send("An error occurred");
   } finally {
     if (conn) conn.release();
@@ -138,7 +139,7 @@ const updateBuild = async (req, res) => {
 };
 
 const deleteBuild = async (req, res) => {
-  let route = "buildController/deleteBuild"
+  let route = `${req.method} ${req.baseUrl}${req.path}`;
   const buildId = req.params.id;
   let conn;
   try {
@@ -148,10 +149,10 @@ const deleteBuild = async (req, res) => {
     const response = await conn.query(
       "DELETE FROM builds WHERE user = ? AND id = ? ;", [userId, buildId]
     );
-    console.log(response);
+    logger.info(`${route} - ${response}`);
     res.send(`Le build avec l'ID ${buildId} a été supprimé`);
   } catch (error) {
-    console.error(error);
+    logger.info(`${route} - ${error}`);
     res.status(500).send("An error occurred");
   } finally {
     if (conn) conn.release();

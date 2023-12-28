@@ -12,31 +12,25 @@ const pool = mariadb.createPool({
 });
 
 const getAllUsers = async (req, res) => {
-    let route = "userController/getAllUsers"
+    let route = `${req.method} ${req.baseUrl}${req.path}`;
     let conn;
     try {
         conn = await pool.getConnection();
         const response = await conn.query(
             "SELECT * FROM users",
         );
-        //console.log(response);
+        logger.info(`${route} - ${response}`);
         res.json({ response });
     } catch (error) {
-        console.error(error);
+        logger.info(`${route} - ${error}`);
         res.status(500).send("An error occurred");
     } finally {
         if (conn) conn.release();
     }
 };
 
-const getUserById = (req, res) => {
-    let route = "userController/getUserById"
-    const userId = req.params.id;
-    res.json({ message: `User with ID ${userId}` });
-};
-
 const createUser = async (req, res) => {
-    let route = "userController/createUser"
+    let route = `${req.method} ${req.baseUrl}${req.path}`;
     const { username, email, password } = req.body;
     const hash = bcrypt.hashSync(password, 10);
     let currentDate = new Date();
@@ -47,12 +41,12 @@ const createUser = async (req, res) => {
             "INSERT INTO users (username, password, email, creationDate, modificationDate, creationUser, modificationUser, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             [username, hash, email, currentDate, currentDate, "admin", "admin", true]
         );
-        //console.log(response);
+        logger.info(`${route} - ${response}`);
         res.status(201).send({
             token: generateAccessToken(req.body.email)
         });
     } catch (error) {
-        console.error(error);
+        logger.info(`${route} - ${error}`);
         res.status(500).send("An error occurred");
     } finally {
         if (conn) conn.release();
@@ -60,7 +54,7 @@ const createUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    let route = "userController/login"
+    let route = `${req.method} ${req.baseUrl}${req.path}`;
     const { username, email, password } = req.body;
     let conn;
     try {
@@ -68,7 +62,7 @@ const login = async (req, res) => {
         const response = await conn.query(
             "SELECT * FROM users WHERE email=?", [email]
         );
-        if (bcrypt.compareSync(req.body.password, response[0].password)){
+        if (bcrypt.compareSync(req.body.password, response[0].password)) {
             res.status(201).send({
                 token: generateAccessToken(req.body.email)
             });
@@ -76,7 +70,7 @@ const login = async (req, res) => {
             res.status(401).send("Wrong password");
         }
     } catch (error) {
-        console.error(error);
+        logger.info(`${route} - ${error}`);
         res.status(500).send("An error occurred");
     } finally {
         if (conn) conn.release();
@@ -84,26 +78,39 @@ const login = async (req, res) => {
 };
 
 const updateUser = (req, res) => {
-    let route = "userController/updateUser"
+    let route = `${req.method} ${req.baseUrl}${req.path}`;
     const userId = req.params.id;
     const { body } = req;
     res.json({ message: `User with ID ${userId} updated`, updatedUser: body });
 };
 
-const deleteUser = (req, res) => {
-    let route = "userController/deleteUser"
-    const userId = req.params.id;
-    res.json({ message: `User with ID ${userId} deleted` });
+const deleteUser = async (req, res) => {
+    let route = `${req.method} ${req.baseUrl}${req.path}`;
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const userResult = await conn.query("SELECT id FROM users WHERE email=?", [req.user.email]);
+        const userId = userResult[0].id;
+        const response = await conn.query(
+            "DELETE FROM users WHERE id = ? ;", [userId]
+        );
+        logger.info(`${route} - ${response}`);
+        res.send(`L'utilisateur avec l'ID ${userId} a été supprimé`);
+    } catch (error) {
+        logger.info(`${route} - ${error}`);
+        res.status(500).send("An error occurred");
+    } finally {
+        if (conn) conn.release();
+    }
 };
 
 const generateAccessToken = (email) => {
     const payload = { email }; // Créer un objet avec l'email
-    return jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1800s' });
+    return jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '86400s' });
 };
 
 module.exports = {
     getAllUsers,
-    getUserById,
     createUser,
     updateUser,
     deleteUser,
