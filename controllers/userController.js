@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+const logger = require('../logger');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mariadb = require('mariadb');
@@ -63,6 +64,7 @@ const login = async (req, res) => {
             "SELECT * FROM users WHERE email=?", [email]
         );
         if (bcrypt.compareSync(req.body.password, response[0].password)) {
+            logger.info(`${route} - ${response}`);
             res.status(201).send({
                 token: generateAccessToken(req.body.email)
             });

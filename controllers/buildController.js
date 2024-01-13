@@ -35,7 +35,7 @@ const getBuildById = async (req, res) => {
   try {
     conn = await pool.getConnection();
     const response = await conn.query(
-      "SELECT * FROM builds WHERE id = ?", [req.params.id]
+      "SELECT * FROM builds WHERE id = ? AND visibility = true", [req.params.id]
     );
     logger.info(`${route} - ${response}`);
     res.json({ response });

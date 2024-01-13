@@ -9,7 +9,7 @@ const authenticateToken = require('../middleware/jwtMiddleware');
 router.get('/', userController.getAllUsers);
 router.post('/login', userController.login);
 router.post('/signup', userController.createUser);
-router.put('/:id', userController.updateUser);
+router.put('/:id', [authenticateToken],userController.updateUser);
 router.delete('/', [authenticateToken] ,userController.deleteUser);
 
 router.get('/:id/builds', [authenticateToken], buildController.getBuildsFromUser); // Recupere tous les builds d'un user
